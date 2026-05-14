@@ -1,7 +1,8 @@
 import sqlite3
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import check_password_hash
-from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email, get_user_by_id, get_expenses_by_user
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -86,36 +87,60 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
+    user_id = session["user_id"]
+    user_row = get_user_by_id(user_id)
+    expenses = get_expenses_by_user(user_id)
+
+    try:
+        dt = datetime.strptime(user_row["created_at"], "%Y-%m-%d %H:%M:%S")
+        member_since = dt.strftime("%B %Y")
+    except (ValueError, TypeError):
+        member_since = "Unknown"
+
+    name = user_row["name"]
     user = {
-        "name": "Alex Johnson",
-        "email": "alex@example.com",
-        "initials": "AJ",
-        "member_since": "January 2024",
+        "name": name,
+        "email": user_row["email"],
+        "initials": "".join(p[0].upper() for p in name.split()[:2]),
+        "member_since": member_since,
     }
 
+    # Aggregate stats
+    total = sum(e["amount"] for e in expenses)
+    cat_totals = {}
+    for e in expenses:
+        cat_totals[e["category"]] = cat_totals.get(e["category"], 0) + e["amount"]
+    top_category = max(cat_totals, key=cat_totals.get) if cat_totals else None
+
     stats = {
-        "total_spent": "₹24,850",
-        "transaction_count": 47,
-        "top_category": "Food",
+        "total_spent": f"₹{total:,.0f}",
+        "transaction_count": len(expenses),
+        "top_category": top_category or "—",
     }
 
     transactions = [
-        {"id": 1, "date": "2024-01-15", "description": "Grocery shopping",    "category": "Food",          "amount": "₹1,250"},
-        {"id": 2, "date": "2024-01-14", "description": "Metro card recharge",  "category": "Transport",     "amount": "₹500"},
-        {"id": 3, "date": "2024-01-13", "description": "Netflix subscription", "category": "Entertainment", "amount": "₹649"},
-        {"id": 4, "date": "2024-01-12", "description": "Electricity bill",     "category": "Bills",         "amount": "₹2,100"},
-        {"id": 5, "date": "2024-01-11", "description": "Doctor consultation",  "category": "Health",        "amount": "₹800"},
-        {"id": 6, "date": "2024-01-10", "description": "Amazon order",         "category": "Shopping",      "amount": "₹1,399"},
+        {
+            "id": e["id"],
+            "date": e["date"],
+            "description": e["description"] or "—",
+            "category": e["category"],
+            "amount": f"₹{e['amount']:,.0f}",
+        }
+        for e in expenses[:20]
     ]
 
-    categories = [
-        {"name": "Food",          "amount": "₹8,450", "pct": 34},
-        {"name": "Bills",         "amount": "₹6,200", "pct": 25},
-        {"name": "Transport",     "amount": "₹4,100", "pct": 17},
-        {"name": "Entertainment", "amount": "₹3,200", "pct": 13},
-        {"name": "Health",        "amount": "₹1,900", "pct": 8},
-        {"name": "Shopping",      "amount": "₹700",   "pct": 3},
-    ]
+    categories = sorted(
+        [
+            {
+                "name": cat,
+                "amount": f"₹{amt:,.0f}",
+                "pct": round((amt / total) * 100) if total else 0,
+            }
+            for cat, amt in cat_totals.items()
+        ],
+        key=lambda x: x["pct"],
+        reverse=True,
+    )
 
     return render_template("profile.html", user=user, stats=stats, transactions=transactions, categories=categories)
 

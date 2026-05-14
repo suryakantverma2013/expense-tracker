@@ -23,17 +23,21 @@
     <!-- Category breakdown card -->
     <div class="profile-card">
       <h2 class="card-heading">Spending by Category</h2>
-      {% for item in categories %}
-      <div class="category-row">
-        <div class="category-meta">
-          <span class="category-name">{{ item.name }}</span>
-          <span class="category-amount">{{ item.amount }}</span>
+      {% if categories %}
+        {% for item in categories %}
+        <div class="category-row">
+          <div class="category-meta">
+            <span class="category-name">{{ item.name }}</span>
+            <span class="category-amount">{{ item.amount }}</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: {{ item.pct }}%"></div>
+          </div>
         </div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width: {{ item.pct }}%"></div>
-        </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <p class="empty-state">No spending data yet.</p>
+      {% endif %}
     </div>
 
   </aside>
@@ -70,18 +74,24 @@
           </tr>
         </thead>
         <tbody>
-          {% for tx in transactions %}
-          <tr class="expense-row">
-            <td class="date-col">{{ tx.date }}</td>
-            <td>{{ tx.description }}</td>
-            <td>
-              <span class="category-badge cat-{{ tx.category | lower }}">
-                {{ tx.category }}
-              </span>
-            </td>
-            <td class="amount-col">{{ tx.amount }}</td>
-          </tr>
-          {% endfor %}
+          {% if transactions %}
+            {% for tx in transactions %}
+            <tr class="expense-row">
+              <td class="date-col">{{ tx.date }}</td>
+              <td>{{ tx.description }}</td>
+              <td>
+                <span class="category-badge cat-{{ tx.category | lower }}">
+                  {{ tx.category }}
+                </span>
+              </td>
+              <td class="amount-col">{{ tx.amount }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="empty-state">No records available.</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>

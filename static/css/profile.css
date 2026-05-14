@@ -207,6 +207,14 @@
 .cat-bills      { background: #fdf3e8; color: #b86d0a; }
 .cat-shopping   { background: #f3e8fd; color: #7c3aed; }
 
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+  padding: 2rem 0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .profile-layout {
