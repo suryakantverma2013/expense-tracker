@@ -1,3 +1,6 @@
 {
-  "permissions": {}
+  "permissions": {},
+  "skillOverrides": {
+    "document-skills:pptx": "on"
+  }
 }
