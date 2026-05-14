@@ -27,30 +27,36 @@ pytest tests/test_auth.py::test_register_user
 
 ### Layers
 
-- **`app.py`** — Flask application entry point. Registers all routes and configures the app instance. New routes go here; each route delegates to the database layer for data access.
-- **`database/db.py`** — Database layer (SQLite via Python's `sqlite3`). Exposes `get_db()`, `init_db()`, and `seed_db()`. All SQL lives here — routes never construct queries directly.
-- **`templates/`** — Jinja2 templates. `base.html` is the root layout that all other templates extend via `{% extends "base.html" %}`.
-- **`static/css/style.css`** — All styling. Uses CSS custom properties (`--color-*`, `--radius-*`) defined at `:root`. The design system uses DM Serif Display for headings and DM Sans for body text, with a forest-green/warm-gold palette.
+- **`app.py`** — Flask entry point. Registers all routes; each route delegates to the database layer. Never constructs SQL directly here.
+- **`database/db.py`** — All SQL lives here. Exposes `get_db()` (connection with `row_factory` and `PRAGMA foreign_keys = ON`), `init_db()` (CREATE TABLE IF NOT EXISTS), and `seed_db()` (demo data, idempotent). Use `werkzeug.security.generate_password_hash` / `check_password_hash` for passwords.
+- **`templates/`** — Jinja2 templates. All pages extend `base.html` via `{% extends "base.html" %}` and override three blocks: `{% block title %}`, `{% block content %}`, `{% block scripts %}`.
+- **`static/css/style.css`** — Global design system: CSS custom properties (`--ink`, `--paper`, `--accent` forest-green, `--accent-2` warm-gold, `--danger`) at `:root`. DM Serif Display for headings, DM Sans for body.
+- **`static/css/landing.css`** — Landing-page-only styles (hero, dashboard mock, video modal). Only loaded by `landing.html`.
 
-### Intended Route Structure
+### Route Status
 
-The app follows a standard CRUD pattern for expenses. Routes already stubbed in `app.py`:
-
-| Route | Method | Purpose |
+| Route | Method | Status |
 |---|---|---|
-| `/` | GET | Landing page |
-| `/register` | GET/POST | User registration |
-| `/login` | GET/POST | User login |
-| `/logout` | GET | Destroy session |
-| `/profile` | GET | User profile |
-| `/expenses/add` | GET/POST | Add expense |
-| `/expenses/<id>/edit` | GET/POST | Edit expense |
-| `/expenses/<id>/delete` | POST | Delete expense |
+| `/` | GET | Implemented |
+| `/terms` | GET | Implemented |
+| `/privacy` | GET | Implemented |
+| `/register` | GET/POST | Template only — no backend logic yet |
+| `/login` | GET/POST | Template only — no backend logic yet |
+| `/logout` | GET | Stub |
+| `/profile` | GET | Stub |
+| `/expenses/add` | GET/POST | Stub |
+| `/expenses/<id>/edit` | GET/POST | Stub |
+| `/expenses/<id>/delete` | POST | Stub |
 
-### Database
+### Database Schema
 
-SQLite file is `expense_tracker.db` (gitignored). The schema and seed data are managed through `database/db.py`. Call `init_db()` to create tables and `seed_db()` to populate test data.
+- **users**: `id`, `name`, `email` (UNIQUE), `password_hash`, `created_at`
+- **expenses**: `id`, `user_id` (FK → users), `amount` (REAL), `category` (Food/Transport/Bills/Health/Entertainment/Shopping/Other), `date` (YYYY-MM-DD), `description`, `created_at`
+
+### Spec-Driven Workflow
+
+Feature specs live in `.claude/specs/` as numbered markdown files (e.g. `01-database-setup.md`). Each spec defines the exact schema, function signatures, constraints, and a Definition of Done checklist. Always read the relevant spec before implementing a feature.
 
 ### Testing
 
-Tests use `pytest-flask`. The test client is configured via a `conftest.py` fixture that creates an in-memory or temp SQLite database so tests never touch the real `expense_tracker.db`.
+Tests use `pytest-flask`. The `tests/` directory does not exist yet — create it with a `conftest.py` that provides a test client fixture using an in-memory or temp SQLite database so tests never touch `expense_tracker.db`.
