@@ -1,0 +1,230 @@
+/* Profile page layout */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  max-width: var(--max-width);
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Card base */
+.profile-card {
+  background: var(--paper-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.card-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* User info card */
+.user-card {
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  background: var(--accent);
+  color: var(--paper);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  letter-spacing: -0.02em;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.profile-email {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  margin-top: 0.25rem;
+}
+
+.profile-since {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-top: 0.5rem;
+}
+
+/* Category breakdown */
+.category-row {
+  margin-bottom: 1rem;
+}
+
+.category-row:last-child {
+  margin-bottom: 0;
+}
+
+.category-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.category-name {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.category-amount {
+  color: var(--ink-soft);
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  transition: width 0.6s ease;
+}
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--paper-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--ink);
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* Transaction table */
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+.expense-table th {
+  color: var(--ink-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.expense-row td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.expense-row:last-child td {
+  border-bottom: none;
+}
+
+.expense-row:hover {
+  background: var(--paper-warm);
+}
+
+.amount-col {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.date-col {
+  color: var(--ink-muted);
+  white-space: nowrap;
+  font-size: 0.825rem;
+}
+
+/* Category badges */
+.category-badge {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cat-food          { background: var(--accent-light);   color: var(--accent); }
+.cat-entertainment { background: var(--accent-2-light); color: var(--accent-2); }
+.cat-health        { background: var(--danger-light);   color: var(--danger); }
+.cat-other         { background: var(--border);         color: var(--ink-soft); }
+
+/* Transport, Bills, Shopping use tints not covered by existing CSS variables */
+.cat-transport  { background: #e8f4fd; color: #1a6fa8; }
+.cat-bills      { background: #fdf3e8; color: #b86d0a; }
+.cat-shopping   { background: #f3e8fd; color: #7c3aed; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .expense-table th,
+  .expense-row td {
+    padding: 0.6rem 0.5rem;
+  }
+}

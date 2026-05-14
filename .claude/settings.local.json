@@ -3,7 +3,8 @@
     "allow": [
       "Bash(Get-ChildItem -Path \"F:\\\\ClaudeSpecDrivenDevelopment\\\\expense-tracker\")",
       "Bash(Select-Object Name, PSIsContainer)",
-      "Bash(Format-Table -AutoSize)"
+      "Bash(Format-Table -AutoSize)",
+      "Skill(document-skills:frontend-design)"
     ]
   }
 }

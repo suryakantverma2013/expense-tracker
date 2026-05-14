@@ -83,7 +83,41 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    user = {
+        "name": "Alex Johnson",
+        "email": "alex@example.com",
+        "initials": "AJ",
+        "member_since": "January 2024",
+    }
+
+    stats = {
+        "total_spent": "₹24,850",
+        "transaction_count": 47,
+        "top_category": "Food",
+    }
+
+    transactions = [
+        {"id": 1, "date": "2024-01-15", "description": "Grocery shopping",    "category": "Food",          "amount": "₹1,250"},
+        {"id": 2, "date": "2024-01-14", "description": "Metro card recharge",  "category": "Transport",     "amount": "₹500"},
+        {"id": 3, "date": "2024-01-13", "description": "Netflix subscription", "category": "Entertainment", "amount": "₹649"},
+        {"id": 4, "date": "2024-01-12", "description": "Electricity bill",     "category": "Bills",         "amount": "₹2,100"},
+        {"id": 5, "date": "2024-01-11", "description": "Doctor consultation",  "category": "Health",        "amount": "₹800"},
+        {"id": 6, "date": "2024-01-10", "description": "Amazon order",         "category": "Shopping",      "amount": "₹1,399"},
+    ]
+
+    categories = [
+        {"name": "Food",          "amount": "₹8,450", "pct": 34},
+        {"name": "Bills",         "amount": "₹6,200", "pct": 25},
+        {"name": "Transport",     "amount": "₹4,100", "pct": 17},
+        {"name": "Entertainment", "amount": "₹3,200", "pct": 13},
+        {"name": "Health",        "amount": "₹1,900", "pct": 8},
+        {"name": "Shopping",      "amount": "₹700",   "pct": 3},
+    ]
+
+    return render_template("profile.html", user=user, stats=stats, transactions=transactions, categories=categories)
 
 
 @app.route("/expenses/add")
