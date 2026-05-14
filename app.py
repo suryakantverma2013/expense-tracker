@@ -56,9 +56,9 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if "user_id" in session:
-        return redirect(url_for("landing"))
     if request.method == "GET":
+        if "user_id" in session:
+            return redirect(url_for("landing"))
         return render_template("login.html")
 
     email = request.form.get("email", "").strip()
@@ -68,6 +68,7 @@ def login():
     if not user or not check_password_hash(user["password_hash"], password):
         return render_template("login.html", error="Invalid email or password.")
 
+    session.clear()
     session["user_id"] = user["id"]
     return render_template("login.html", success=f"Welcome back, {user['name']}!")
 
