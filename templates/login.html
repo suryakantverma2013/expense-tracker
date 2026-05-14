@@ -16,6 +16,9 @@
             {% if error %}
             <div class="auth-error">{{ error }}</div>
             {% endif %}
+            {% if success %}
+            <div class="auth-success">{{ success }}</div>
+            {% endif %}
 
             <form method="POST" action="{{ url_for('login') }}">
                 <div class="form-group">
@@ -42,4 +45,12 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+{% if success %}
+<script>
+  setTimeout(function () { window.location.href = "{{ url_for('landing') }}"; }, 1500);
+</script>
+{% endif %}
 {% endblock %}
